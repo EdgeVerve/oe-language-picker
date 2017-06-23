@@ -33,7 +33,7 @@
   <script>
     (function (send) {
       XMLHttpRequest.prototype.send = function () {
-        this.setRequestHeader('Accept-Language', I18nMsg.lang || window.navigator.userLanguage || window.navigator.language);
+        this.setRequestHeader('Accept-Language', OEi18nMsg.lang || window.navigator.userLanguage || window.navigator.language);
         send.apply(this, arguments);
       };
     })(XMLHttpRequest.prototype.send);
