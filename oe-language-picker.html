@@ -1,0 +1,89 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../oe-i18n-msg/oe-i18n-msg.html">
+
+<!--
+### language-picker
+
+	`<language-picker>` element can be used to choose display language.
+
+-->
+
+<dom-module id="oe-language-picker">
+  <template>
+    <paper-menu-button>
+      <paper-icon-button icon="icons:language" class="dropdown-trigger"></paper-icon-button>
+      <paper-menu id="languageSelector" selected={{lang}} attr-for-selected="data-locale" class="dropdown-content">
+        <template is="dom-repeat" items={{languages}}>
+          <paper-item data-locale={{item.locale}}>
+            <span>{{item.text}}</span>
+          </paper-item>
+        </template>
+      </paper-menu>
+    </paper-menu-button>
+
+  </template>
+  <script>
+    (function (send) {
+      XMLHttpRequest.prototype.send = function () {
+        this.setRequestHeader('Accept-Language', OEi18nMsg.lang || window.navigator.userLanguage || window.navigator.language);
+        send.apply(this, arguments);
+      };
+    })(XMLHttpRequest.prototype.send);
+    Polymer({
+      is: 'oe-language-picker',
+      properties: {
+
+        /* Currently selected language */
+        lang: {
+          type: String,
+          notify: true,
+          observer: '_langChanged'
+        },
+
+        /* Resource url for fetching literal translation for selected language */
+        url: {
+          type: String,
+          notify: true,
+          value: '/api/Literals/render'
+        },
+
+        /* list of languages to display in dropdown */
+        languages: {
+          type: Array,
+          value: [{
+            'locale': 'en-US',
+            'text': 'English'
+          }, {
+            'locale': 'fr',
+            'text': 'French'
+          }, {
+            'locale': 'it',
+            'text': 'Italian'
+          }, {
+            'locale': 'de',
+            'text': 'German'
+          }]
+        }
+      },
+      attached: function () {
+        this.lang = this.lang || sessionStorage.lang || window.navigator.userLanguage || window.navigator.language;
+      },
+      _langChanged: function (lang) {
+        OEi18nMsg.url = OEUtils.geturl(this.url || OEi18nMsg.url);
+        OEi18nMsg.lang = lang;
+        sessionStorage.lang = OEi18nMsg.lang;
+        Platform.performMicrotaskCheckpoint();
+      }
+    });
+
+  </script>
+
+</dom-module>
