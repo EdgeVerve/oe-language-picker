@@ -52,7 +52,10 @@
         url: {
           type: String,
           notify: true,
-          value: '/api/Literals/render'
+          value: function(){
+		    var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+		    return restApiRoot + '/Literals/render';
+		  }
         },
 
         /* list of languages to display in dropdown */
