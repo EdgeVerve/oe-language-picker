@@ -37,6 +37,7 @@
         send.apply(this, arguments);
       };
     })(XMLHttpRequest.prototype.send);
+    window.OEUtils = window.OEUtils || {} ;
     Polymer({
       is: 'oe-language-picker',
       properties: {
@@ -77,7 +78,8 @@
         this.lang = this.lang || sessionStorage.lang || window.navigator.userLanguage || window.navigator.language;
       },
       _langChanged: function (lang) {
-        OEi18nMsg.url = OEUtils.geturl(this.url || OEi18nMsg.url);
+        OEi18nMsg = OEi18nMsg || {};
+        OEi18nMsg.url = (OEUtils && OEUtils.geturl)?OEUtils.geturl(this.url || OEi18nMsg.url):this.url;
         OEi18nMsg.lang = lang;
         sessionStorage.lang = OEi18nMsg.lang;
         Platform.performMicrotaskCheckpoint();
